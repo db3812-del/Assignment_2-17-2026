@@ -1,5 +1,5 @@
-Assignment Answers
-Part 1: JSON Data
+=== Part 1: JSON Data ===
+
 1. Extract and print all dates and temperatures:
    2023-01-01: 32°F
    2023-01-02: 28°F
@@ -14,41 +14,38 @@ Part 1: JSON Data
    2023-01-02: 0.5 inches
    2023-01-04: 0.2 inches
 
-4. Real API (Open-Meteo):
-    Successfully connected to Open-Meteo API!
-    Location: New York City
-    Current Temperature: 2.1°C
-    Wind Speed: 14.4 km/h 
-
 === Part 2: Downloading Files with Python ===
 
 1. File Verification (air_quality_no2.csv):
    File size: 31984 bytes
    Number of lines: 1036
 
-2. Data Inventory:
-   1. meteorites.csv - NASA meteorite landings
-   2. air_quality_no2.csv - Air quality NO2 measurements
-   3. monthly.csv - Global Temperature Anomalies (NASA/GISS)
+2. Downloaded Files:
+   - GLB.Ts+dSST.csv (NASA GISTEMP Global Temperature Anomalies)
 
+3. Data Inventory:
+   1. air_quality_no2.csv - Air quality NO2 measurements
+   2. GLB.Ts+dSST.csv - NASA GISTEMP Global Temperature Anomalies
 
 === Part 3: Understanding NetCDF Metadata ===
 
 1. Dimensions and Variables:
-   - Dimensions: T (Time), Y (Latitude), X (Longitude)
-   - Main Variable: rain
-   - **Dimension names:** T (time), Y (latitude), X (longitude)
-     **Main variable name:** rain
+   - Dimensions: T (time), Y (latitude), X (longitude)
+   - Main variable: rain
 
 2. Dataset Documentation:
-   - What does this dataset contain? 
-     Monthly Precipitation (Found in 'long_name').
-   
-   - What time period does it cover? 
-     It tracks months since 1960-01-01 (Found in T 'units').
-   
-   - What geographic region does it cover? 
-     Global (Defined by Y for Latitude and X for Longitude).
-   
-   - What are the units of the main variable? 
-     mm/day (Found in rain 'units').
+   - What does this dataset contain?
+     Monthly precipitation data from global rain gauges
+     (Found in rain 'long_name': "Monthly Precipitation")
+
+   - What time period does it cover?
+     324 months since 1960-01-01 (January 1960 to December 1986)
+     (Found in T 'units': "months since 1960-01-01")
+
+   - What geographic region does it cover?
+     Global coverage at 0.5° resolution
+     (Y for latitude, X for longitude from DDS/DAS)
+
+   - What are the units of the main variable?
+     mm/day (millimeters per day)
+     (Found in rain 'units')
