@@ -1,5 +1,43 @@
 === Part 1: JSON Data ===
 
+CODE:
+# 1. Extract and print all dates and temperatures (8 points)
+print("Date, Temperature")
+for obs in data['observations']:
+    # YOUR CODE HERE: print date and temperature for each observation
+    print(f"{obs['date']}, {obs['temperature']}°F")
+
+# 2. Calculate average temperature (8 points)
+total_temp = 0
+count = 0
+for obs in data['observations']:
+    total_temp += obs['temperature']
+    count += 1
+avg_temp = total_temp / count
+print(f"Average temperature: {avg_temp:.1f}°F")
+
+# 3. Find days with precipitation (9 points)
+print("\nDays with precipitation:")
+for obs in data['observations']:
+    if obs['precipitation'] > 0:
+        print(f"  {obs['date']}: {obs['precipitation']} inches")
+
+# 4. Real API - Open-Meteo
+import requests
+url = "https://api.open-meteo.com/v1/forecast?latitude=40.71&longitude=-74.01&current_weather=true"
+response = requests.get(url)
+
+if response.status_code == 200:
+    data = response.json()
+    current = data['current_weather']
+    print("Successfully connected to Open-Meteo API!")
+    print(f"Location: New York City")
+    print(f"Current Temperature: {current['temperature']}°C")
+    print(f"Wind Speed: {current['windspeed']} km/h")
+else:
+    print(f"Failed to get data. Error code: {response.status_code}")
+
+OUTPUT:
 1. Extract and print all dates and temperatures:
    2023-01-01: 32°F
    2023-01-02: 28°F
@@ -14,21 +52,106 @@
    2023-01-02: 0.5 inches
    2023-01-04: 0.2 inches
 
+4. Real API (Open-Meteo):
+   Successfully connected to Open-Meteo API!
+   Location: New York City
+   Current Temperature: 2.1°C
+   Wind Speed: 14.4 km/h
+
 === Part 2: Downloading Files with Python ===
+
+CODE:
+import pooch
+import os
+
+file_path = pooch.retrieve(
+    url="https://github.com/pandas-dev/pandas/raw/main/doc/data/air_quality_no2.csv",
+    known_hash=None
+)
+
+file_size = os.path.getsize(file_path)
+line_count = 0
+with open(file_path) as f:
+    for line in f:
+        line_count += 1
+
+my_url = "https://raw.githubusercontent.com/datasets/global-temp/master/data/monthly.csv"
+my_file = pooch.retrieve(url=my_url, known_hash=None)
+
+OUTPUT:
+File size: 31984 bytes
+Number of lines: 1036
 
 1. File Verification (air_quality_no2.csv):
    File size: 31984 bytes
    Number of lines: 1036
 
 2. Downloaded Files:
-   - GLB.Ts+dSST.csv (NASA GISTEMP Global Temperature Anomalies)
+   - monthly.csv (Global Temperature Anomalies from NASA/GISS)
 
 3. Data Inventory:
-   1. air_quality_no2.csv - Air quality NO2 measurements
-   2. GLB.Ts+dSST.csv - NASA GISTEMP Global Temperature Anomalies
+   1. meteorites.csv - NASA meteorite landings
+   2. air_quality_no2.csv - Air quality NO2 measurements
+   3. monthly.csv - Global Temperature Anomalies (NASA/GISS)
+
+
+
+=== Part 2: Downloading Files with Python ===
+
+CODE:
+import pooch
+import os
+
+file_path = pooch.retrieve(
+    url="https://github.com/pandas-dev/pandas/raw/main/doc/data/air_quality_no2.csv",
+    known_hash=None
+)
+
+# TASK 1: Verify download
+file_size = os.path.getsize(file_path)
+print(f"File size: {file_size} bytes")
+
+line_count = 0
+with open(file_path, 'r') as f:
+    for line in f:
+        line_count += 1
+print(f"Number of lines: {line_count}")
+
+# TASK 2: Download another file
+my_url = "https://raw.githubusercontent.com/datasets/global-temp/master/data/monthly.csv"
+my_file = pooch.retrieve(url=my_url, known_hash=None)
+
+# TASK 3: Data inventory
+print("1. meteorites.csv - NASA meteorite landings")
+print("2. air_quality_no2.csv - Air quality NO2 measurements")
+print("3. monthly.csv - Global Temperature Anomalies (NASA/GISS)")
+
+OUTPUT:
+File size: 31984 bytes
+Number of lines: 1036
+Downloaded: monthly.csv
+
 
 === Part 3: Understanding NetCDF Metadata ===
 
+CODE:
+import requests
+
+base_url = "http://iridl.ldeo.columbia.edu/expert/SOURCES/.NOAA/.NCEP/.CPC/.UNIFIED_PRCP/.GAUGE_BASED/.GLOBAL/.v1p0/.Monthly/.RETRO/.rain/dods"
+
+# TASK 1: Get DDS (Dataset Descriptor Structure)
+dds_url = base_url + ".dds"
+response_dds = requests.get(dds_url)
+print("--- Dataset Structure (DDS) ---")
+print(response_dds.text)
+
+# TASK 2: Get DAS (Dataset Attribute Structure)
+das_url = base_url + ".das"
+response_das = requests.get(das_url)
+print("--- Dataset Attributes (DAS) ---")
+print(response_das.text[:1000])
+
+ANSWERS:
 1. Dimensions and Variables:
    - Dimensions: T (time), Y (latitude), X (longitude)
    - Main variable: rain
