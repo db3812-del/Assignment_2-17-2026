@@ -1,4 +1,3 @@
-
 # ============================================================
 # Homework Assignment: Data Formats and Access
 # ============================================================
@@ -7,6 +6,7 @@ import requests
 import json
 import os
 
+# ============================================================
 # PART 1: Working with JSON Data
 # ============================================================
 
@@ -27,23 +27,31 @@ sample_json = '''
 
 data = json.loads(sample_json)
 
-# Task 1: Print dates and temperatures
+# 1. Extract and print all dates and temperatures (8 points)
 print("Date, Temperature")
 for obs in data['observations']:
+    # YOUR CODE HERE: print date and temperature for each observation
     print(f"{obs['date']}, {obs['temperature']}°F")
 
-# Task 2: Average temperature
-temps = [obs['temperature'] for obs in data['observations']]
-avg_temp = sum(temps) / len(temps)
-print(f"\nAverage temperature: {avg_temp:.1f}°F")
+# 2. Calculate average temperature (8 points)
+total_temp = 0
+count = 0
+# YOUR CODE HERE: calculate average
+for obs in data['observations']:
+    total_temp += obs['temperature']
+    count += 1
+avg_temp = total_temp / count
+print(f"Average temperature: {avg_temp:.1f}°F")
 
-# Task 3: Days with precipitation
+# 3. Find days with precipitation (9 points)
 print("\nDays with precipitation:")
+# YOUR CODE HERE
 for obs in data['observations']:
     if obs['precipitation'] > 0:
         print(f"  {obs['date']}: {obs['precipitation']} inches")
 
-# PART 2: File Downloads
+# ============================================================
+# PART 2: Downloading Files with Python
 # ============================================================
 
 import pooch
@@ -53,31 +61,47 @@ file_path = pooch.retrieve(
     known_hash=None
 )
 
-# Task 1: Count lines
+print("File downloaded to:", file_path)
+
+# 1. Verify the file was downloaded (5 points)
+file_size = os.path.getsize(file_path)
+print(f"File size: {file_size} bytes")
+
+# YOUR CODE HERE: open the file and count how many lines it has
 line_count = 0
 with open(file_path) as f:
     for line in f:
         line_count += 1
-print(f"\nNumber of lines: {line_count}")
+print(f"Number of lines: {line_count}")
 
-# Task 2: Download NASA GISTEMP
+# 2. Download another file (10 points)
+# YOUR CODE HERE:
 my_url = "https://data.giss.nasa.gov/gistemp/tabledata_v4/GLB.Ts+dSST.csv"
 my_file = pooch.retrieve(url=my_url, known_hash=None)
 print(f"Downloaded: {my_file}")
 
-# PART 3: NetCDF Metadata
+# 3. Create a data inventory (5 points)
+print("\nData Inventory:")
+print("1. air_quality_no2.csv - Air quality NO2 measurements")
+# YOUR CODE HERE: add your file from task 2
+print("2. GLB.Ts+dSST.csv - NASA GISTEMP Global Temperature Anomalies")
+
+# ============================================================
+# PART 3: Understanding NetCDF Metadata
 # ============================================================
 
 base_url = "http://iridl.ldeo.columbia.edu/expert/SOURCES/.NOAA/.NCEP/.CPC/.UNIFIED_PRCP/.GAUGE_BASED/.GLOBAL/.v1p0/.Monthly/.RETRO/.rain/dods"
 
-# Get DDS
+# Get DDS (Dataset Descriptor Structure)
 dds_url = base_url + ".dds"
 response = requests.get(dds_url)
-print("\n=== DDS ===")
+print("\nDataset Structure:")
 print(response.text[:500])
 
-# Get DAS
+# 2. Get data attributes (5 points)
+# DAS (Dataset Attribute Structure) contains metadata
 das_url = base_url + ".das"
+# YOUR CODE HERE: make a request to das_url and print first 1000 characters
 das_response = requests.get(das_url)
-print("\n=== DAS ===")
+print("\nDataset Attributes:")
 print(das_response.text[:1000])
